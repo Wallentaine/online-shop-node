@@ -8,9 +8,9 @@ const app = express()
 
 
 
-// app.get('/body', (req, res) => {
-//     res.status(200).json({message: "hello"})
-// })
+app.get('/body', (req, res) => {
+    res.status(200).json({message: "hello"})
+})
 
 const start = async () => {
     try {
