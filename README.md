@@ -5,9 +5,9 @@
 <b>How to name commits:</b>
 <br/>
 <br/>
-<div>version: dayXcommitX / description</div>
+<span>version: dayXcommitX / description</span>
 <br/>
 <b>or</b>
 <br/>
-<div>dXcX / description</div>
+<span>dXcX / description</span>
 <br/>
