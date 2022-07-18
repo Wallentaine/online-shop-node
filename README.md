@@ -5,3 +5,6 @@
 <br/>
 <br/>
 <i>Спасибо Дмитрию за код!</i>
+
+<p>version: day * commit *</p>
+<p>version: d*c*</p>
