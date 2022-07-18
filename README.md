@@ -4,9 +4,9 @@
 <h2>Description: </h2>
 <b>How to name commits:</b>
 <br/>
-<div style="padding: 4px; background: aquamarine; color: white">version: dayXcommitX / description</div>
 <br/>
+<div>version: dayXcommitX / description</div>
+
 <b>or</b>
-<br/>
-<div style="padding: 4px; background: aquamarine; color: white">dXcX / description</div>
+<div>dXcX / description</div>
 <br/>
