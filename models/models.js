@@ -93,6 +93,11 @@ const Rating = sequelize.define('rating', {
     rate: {type: DataTypes.INTEGER, defaultValue: 0}
 })
 
+const FilmInfo = sequelize.define('film_info', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+
+})
+
 
 
 User.hasOne(Basket)
@@ -131,31 +136,31 @@ Rating.belongsTo(Film)
 Genre.hasMany(GenreFilm)
 GenreFilm.belongsTo(Genre)
 
-Film.hasMany(GenreFilm)
+Film.hasMany(GenreFilm, {as: 'film_genre', foreignKey: 'filmId'})
 GenreFilm.belongsTo(Film)
 
 Scenarist.hasMany(ScenaristFilm)
 ScenaristFilm.belongsTo(Scenarist)
 
-Film.hasMany(ScenaristFilm)
+Film.hasMany(ScenaristFilm, {as: 'film_scenarist', foreignKey: 'filmId'})
 ScenaristFilm.belongsTo(Film)
 
 Actor.hasMany(ActorFilm)
 ActorFilm.belongsTo(Actor)
 
-Film.hasMany(ActorFilm)
+Film.hasMany(ActorFilm, {as: 'film_actor', foreignKey: 'filmId'})
 ActorFilm.belongsTo(Film)
 
 Producer.hasMany(ProducerFilm)
 ProducerFilm.belongsTo(Producer)
 
-Film.hasMany(ProducerFilm)
+Film.hasMany(ProducerFilm, {as: 'film_producer', foreignKey: 'filmId'})
 ProducerFilm.belongsTo(Film)
 
 Country.hasMany(CountryFilm)
-CountryFilm.belongsTo(Film)
+CountryFilm.belongsTo(Country)
 
-Film.hasMany(CountryFilm)
+Film.hasMany(CountryFilm, {as: 'film_country', foreignKey: 'filmId'})
 CountryFilm.belongsTo(Film)
 
 module.exports = {

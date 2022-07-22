@@ -15,7 +15,7 @@ const purchasedRouter = require('./purchasedRouter')
 const ratingRouter = require('./ratingRouter')
 
 // router.use('/user', userRouter)
-// router.use('/film', filmRouter)
+router.use('/film', filmRouter)
 // router.use('/basket', basketRouter)
 router.use('/genre', genreRouter)
 router.use('/scenarist', scenaristRouter)
