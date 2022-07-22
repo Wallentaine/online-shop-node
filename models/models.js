@@ -93,11 +93,6 @@ const Rating = sequelize.define('rating', {
     rate: {type: DataTypes.INTEGER, defaultValue: 0}
 })
 
-const FilmInfo = sequelize.define('film_info', {
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-
-})
-
 
 
 User.hasOne(Basket)
