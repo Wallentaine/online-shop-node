@@ -14,7 +14,7 @@ const blockedRouter = require('./blockedRouter')
 const purchasedRouter = require('./purchasedRouter')
 const ratingRouter = require('./ratingRouter')
 
-// router.use('/user', userRouter)
+router.use('/user', userRouter)
 router.use('/film', filmRouter)
 // router.use('/basket', basketRouter)
 router.use('/genre', genreRouter)
@@ -24,7 +24,7 @@ router.use('/producer', producerRouter)
 router.use('/country', countryRouter)
 router.use('/liked', likedRouter)
 router.use('/blocked', blockedRouter)
-// router.use('/purchased', purchasedRouter) not finally
+router.use('/purchased', purchasedRouter)
 // router.use('/rating', ratingRouter)
 
 module.exports = router

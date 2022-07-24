@@ -15,7 +15,7 @@ class PurchasedController {
 
         if (user.balance - film.price < 0) return next(ApiError.badRequest("У пользователя недостаточно средств!"))
 
-        const updateBalance = await User.update({balance: user.balance - film.price})
+        const updateBalance = await User.update({where: {userId}}, {balance: user.balance - film.price})
 
         if (!updateBalance) return next(ApiError.internal("Что-то пошло не так!"))
 
