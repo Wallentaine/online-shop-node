@@ -23,8 +23,8 @@ router.use('/actor', actorRouter)
 router.use('/producer', producerRouter)
 router.use('/country', countryRouter)
 router.use('/liked', likedRouter)
-// router.use('/blocked', blockedRouter)
-// router.use('/purchased', purchasedRouter)
+router.use('/blocked', blockedRouter)
+// router.use('/purchased', purchasedRouter) not finally
 // router.use('/rating', ratingRouter)
 
 module.exports = router

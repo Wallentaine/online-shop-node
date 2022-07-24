@@ -26,7 +26,10 @@ class LikedController {
         if (userId) {
             const liked = await Liked.findAll({where: {userId}})
 
-            return res.json(liked)
+            if (liked)
+                return res.json(liked)
+            else
+                return next(ApiError.badRequest("Что-то пошло не так!"))
         } else {
             return next(ApiError.badRequest("Не был передан Id пользователя!"))
         }
