@@ -24,7 +24,7 @@ const Film = sequelize.define('film', {
     alternativeName: {type: DataTypes.STRING, unique: true, allowNull: false},
     poster: {type: DataTypes.STRING, allowNull: false},
     description: {type: DataTypes.TEXT, allowNull: false},
-    year: {type: DataTypes.DATE, allowNull: false},
+    year: {type: DataTypes.INTEGER, allowNull: false},
     rating: {type: DataTypes.DOUBLE, defaultValue: 0},
     playTime: {type: DataTypes.INTEGER, defaultValue: 0},
     price: {type: DataTypes.DOUBLE, defaultValue: 0}

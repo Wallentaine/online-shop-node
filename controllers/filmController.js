@@ -1,10 +1,21 @@
 const {Film, CountryFilm, ProducerFilm, GenreFilm, ScenaristFilm, ActorFilm} = require('../models/models')
+const uuid = require('uuid')
+const path = require('path')
+
 const ApiError = require('../error/ApiError')
 
 class FilmController {
     async create(req, res, next) {
         try {
+            let {name, alternativeName, description, year, playTime, price} = req.body
+            const {poster} = req.files
+            let fileName = uuid.v4() + ".jpg"
+            await poster.mv(path.resolve(__dirname, '..', 'static', fileName))
+            const film = await Film.create({name, alternativeName, poster: fileName, description, year, playTime, price})
 
+            if (!film) return next(ApiError.badRequest("Возможно были переданы не все параметры!"))
+
+            return res.json(film)
         } catch (e) {
             next(ApiError.badRequest(e.message))
         }
@@ -12,7 +23,12 @@ class FilmController {
 
     async getAll(req, res, next) {
         try {
-            let {genreId, scenaristId, actorId, producerId, countryId} = req.query
+            let {genreId, scenaristId, actorId, producerId, countryId, limit, page} = req.query
+
+            page = page || 1
+            limit = limit || 20
+
+            let offset = page * limit - limit
 
             let querySort = []
 
@@ -47,9 +63,11 @@ class FilmController {
                 required: true
             })
 
-            const films = await Film.findAll({
+            const films = await Film.findAndCountAll({
                 where: {},
                 include: querySort,
+                limit,
+                offset
             })
 
             if (!films) return next(ApiError.badRequest("Не найдено ни одного фильма"))
