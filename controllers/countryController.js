@@ -3,18 +3,34 @@ const ApiError = require('../error/ApiError')
 
 class CountryController {
     async create(req, res, next) {
-        const {name} = req.body
+        try {
+            const {name} = req.body
 
-        const exist = await Country.findOne({where: {name}})
+            if (!name) next(ApiError.badRequest("Не был передан аргумент name!"))
 
-        if (exist) return next(ApiError.badRequest("Эта страна уже существует!"))
+            const exist = await Country.findOne({where: {name}})
 
-        const country = await Country.create({name})
-        return res.json(country)
+            if (exist) return next(ApiError.badRequest("Эта страна уже существует!"))
+
+            const country = await Country.create({name})
+
+            if (!country) return next(ApiError.internal("Что-то пошло не так!"))
+
+            return res.json(country)
+        } catch (e) {
+            next(ApiError.internal(e.message))
+        }
     }
-    async getAll(req, res) {
-        const countries = await Country.findAll()
-        return res.json(countries)
+    async getAll(req, res, next) {
+        try {
+            const countries = await Country.findAll()
+
+            if (!countries) return next(ApiError.internal("Что-то пошло не так!"))
+
+            return res.json(countries)
+        } catch (e) {
+            next(ApiError.internal(e.message))
+        }
     }
 }
 

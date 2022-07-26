@@ -3,18 +3,35 @@ const ApiError = require('../error/ApiError')
 
 class ActorController {
     async create(req, res, next) {
-        const {name} = req.body
+        try {
+            const {name} = req.body
 
-        const exist = await Actor.findOne({where: {name}})
+            if (!name) return next(ApiError.badRequest("Не был передан userId!"))
 
-        if (exist) return next(ApiError.badRequest("Этот актёр уже существует!"))
+            const exist = await Actor.findOne({where: {name}})
 
-        const actor = await Actor.create({name})
-        return res.json(actor)
+            if (exist) return next(ApiError.badRequest("Этот актёр уже существует!"))
+
+            const actor = await Actor.create({name})
+
+            if (!actor) next(ApiError.internal("Что-то пошло не так!"))
+
+            return res.json(actor)
+        } catch (e) {
+            next(ApiError.internal(e.message))
+        }
     }
-    async getAll(req, res) {
-        const actors = await Actor.findAll()
-        return res.json(actors)
+
+    async getAll(req, res, next) {
+        try {
+            const actors = await Actor.findAll()
+
+            if (!actors) return next(ApiError.internal("Что-то пошло не так!"))
+
+            return res.json(actors)
+        } catch (e) {
+            next(ApiError.internal(e.message))
+        }
     }
 }
 

@@ -3,48 +3,58 @@ const ApiError = require('../error/ApiError')
 
 class BlockedController {
     async addBlockedFilm(req, res, next) {
-        const {userId, filmId} = req.body
+        try {
+            const {userId, filmId} = req.body
 
-        if (userId && filmId) {
+            if (!userId || !filmId) return next(ApiError.badRequest("Не был передан userId и/или filmId!"))
+
             const exist = await Blocked.findOne({where: {userId, filmId}})
 
             if (exist) return next(ApiError.internal("Что-то пошло не так!"))
 
             const blocked = await Blocked.create({userId, filmId})
 
+            if (!blocked) return next(ApiError.internal("Что-то пошло не так!"))
+
             return res.json(blocked)
-        } else if (!userId) {
-            return next(ApiError.badRequest("Не был передан UserID!"))
-        } else if (!filmId) {
-            return next(ApiError.badRequest("Не был передан FilmId!"))
+        } catch (e) {
+            next(ApiError.internal(e.message))
         }
     }
 
     async getAll(req, res, next) {
-        const {userId} = req.body
+        try {
+            const {userId} = req.body
 
-        if (userId) {
+            if (!userId) return next(ApiError.badRequest("Не был передан Id пользователя!"))
+
             const blocked = await Blocked.findAll({where: {userId}})
 
+            if (!blocked) return next(ApiError.internal("Что-то пошло не так!"))
+
             return res.json(blocked)
-        } else {
-            return next(ApiError.badRequest("Не был передан Id пользователя!"))
+        } catch (e) {
+            next(ApiError.internal(e.message))
         }
     }
 
     async deleteBlockedFilm(req, res, next) {
-        const {id} = req.body
+        try {
+            const {userId, filmId} = req.body
 
-        if (id) {
-            const exist = await Blocked.findOne({where: {id}})
+            if (!userId || !filmId) return next(ApiError.badRequest("Не был передан userId и/или filmId!"))
 
-            if (!exist) return next(ApiError.internal("Что-то пошло не так!"))
+            const isBlocked = await Blocked.findOne({where: {id}})
 
-            const blocked = await Blocked.destroy({where: {id}})
+            if (!isBlocked)  return next(ApiError.badRequest("Данного фильма нет в заблокированных пользователем!"))
 
-            return res.json(blocked)
-        } else {
-            return next(ApiError.badRequest("В запросе не был передан Id"))
+            const blockedDestroy = await Blocked.destroy({where: {id: isBlocked.id}})
+
+            if (!blockedDestroy) return next(ApiError.internal("Что-то пошло не так!"))
+
+            return res.json(blockedDestroy)
+        } catch (e) {
+            next(ApiError.internal(e.message))
         }
     }
 }

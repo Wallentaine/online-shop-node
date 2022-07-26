@@ -3,17 +3,34 @@ const ApiError = require('../error/ApiError')
 
 class ProducerController {
     async create(req, res, next) {
-        const {name} = req.body
-        const exist = await Producer.findOne({where: {name}})
+        try {
+            const {name} = req.body
 
-        if (exist) return next(ApiError.badRequest("Такой жанр уже существует!"))
+            if (!name) return next(ApiError.badRequest("Не был передан аргумент Name!"))
 
-        const producer = await Producer.create({name})
-        return res.json(producer)
+            const exist = await Producer.findOne({where: {name}})
+
+            if (exist) return next(ApiError.badRequest("Такой жанр уже существует!"))
+
+            const producer = await Producer.create({name})
+
+            if (!producer) return next(ApiError.internal("Что-то пошло не так!"))
+
+            return res.json(producer)
+        } catch (e) {
+            next(ApiError.internal(e.message))
+        }
     }
-    async getAll(req, res) {
-        const producers = await Producer.findAll()
-        return res.json(producers)
+    async getAll(req, res, next) {
+        try {
+            const producers = await Producer.findAll()
+
+            if (!producers) return next(ApiError.internal("Что-то пошло не так!"))
+
+            return res.json(producers)
+        } catch (e) {
+            next(ApiError.internal(e.message))
+        }
     }
 }
 

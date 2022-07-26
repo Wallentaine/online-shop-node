@@ -1,43 +1,56 @@
 const {User, Film, Purchased} = require('../models/models')
 const ApiError = require('../error/ApiError')
 
+// Протестировать!!!!!!!!
+
 class PurchasedController {
     async addPurchasedFilm(req, res, next) {
-        const {userId, filmId} = req.body
+        try {
+            const {userId, filmId} = req.body
 
-        const user = await User.findOne({where: {userId}})
+            if (!userId || !filmId) return next(ApiError.badRequest("Не был передан userId и/или filmId!"))
 
-        if (!user) return next(ApiError.internal("Что-то пошло не так!"))
+            const user = await User.findOne({where: {id: userId}})
 
-        const film = await Film.findOne({where: {filmId}})
+            if (!user) return next(ApiError.badRequest("Пользователя с таким id не существует!"))
 
-        if (!film) return next(ApiError.internal("Что-то пошло не так!"))
+            const film = await Film.findOne({where: {id: filmId}})
 
-        if (user.balance - film.price < 0) return next(ApiError.badRequest("У пользователя недостаточно средств!"))
+            if (!film) return next(ApiError.badRequest("Фильма с таким id не существует!"))
 
-        const updateBalance = await User.update({where: {userId}}, {balance: user.balance - film.price})
+            const isPurchased = await Purchased.findOne({where: {userId, filmId}})
 
-        if (!updateBalance) return next(ApiError.internal("Что-то пошло не так!"))
+            if (isPurchased) return next(ApiError.badRequest("Фильм уже куплен пользователем!"))
 
-        const purchased = await Purchased.create({userId, filmId})
+            if (user.balance - film.price < 0) return next(ApiError.badRequest("У пользователя недостаточно средств!"))
 
-        if (!purchased) return next(ApiError.badRequest("Что-то пошло не так!"))
+            const updateBalance = await User.update({balance: user.balance - film.price}, {where: {id: userId}})
 
-        return res.json(purchased)
+            if (!updateBalance) return next(ApiError.internal("Что-то пошло не так!"))
+
+            const purchased = await Purchased.create({userId, filmId})
+
+            if (!purchased) return next(ApiError.badRequest("Что-то пошло не так!"))
+
+            return res.json(purchased)
+        } catch (e) {
+            next(ApiError.internal(e.message))
+        }
     }
 
     async getAll(req, res, next) {
-        const {userId} = req.body
+        try {
+            const {userId} = req.body
 
-        if (userId) {
+            if (!userId) next(ApiError.badRequest("Не был передан UserId!"))
+
             const films = await Purchased.findAll({where: {userId}})
 
-            if (films)
-                return res.json(films)
-            else
-                return next(ApiError.badRequest("Что-то пошло не так!"))
-        } else {
-            next(ApiError.badRequest("Не был передан UserId!"))
+            if (!films) return next(ApiError.badRequest("Что-то пошло не так!"))
+
+            return res.json(films)
+        } catch (e) {
+            next(ApiError.internal(e.message))
         }
     }
 }
