@@ -26,7 +26,7 @@ router.use('/country', countryRouter)
 router.use('/liked', likedRouter) // не уверен в работоспособности
 router.use('/blocked', blockedRouter)
 router.use('/purchased', purchasedRouter)
-// router.use('/rating', ratingRouter)
-router.use('/test', testRouter)
+router.use('/rating', ratingRouter)
+//router.use('/test', testRouter)
 
 module.exports = router

@@ -3,6 +3,6 @@ const router = new Router()
 const ratingController = require('../controllers/ratingController')
 const authMiddleware = require('../middleware/authMiddleware')
 
-//router.post('/', authMiddleware, ratingController.addRating)
+router.post('/', ratingController.addRating)
 
 module.exports = router
