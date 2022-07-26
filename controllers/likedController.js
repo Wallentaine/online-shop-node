@@ -41,7 +41,11 @@ class LikedController {
         if (userId && filmId) {
             const liked = await Liked.findOne({where: {userId, filmId}})
 
-            if (liked) return res.json(liked)
+            if (liked)
+                return res.json(liked)
+            else
+                return next(ApiError.badRequest("Данного фильма нет в понравившихся пользователю!"))
+
         } else if (!userId) {
             return next(ApiError.badRequest("Не был передан UserID!"))
         } else if (!filmId) {
@@ -50,19 +54,18 @@ class LikedController {
     }
 
     async deleteLikedFilm(req, res, next) {
-        const {id} = req.body
+        const {userId, filmId} = req.body
 
-        if (id) {
-            const exist = await Liked.findOne({where: {id}})
+        const isLiked = await Liked.findOne({where: {userId, filmId}})
 
-            if (!exist) return next(ApiError.internal("Что-то пошло не так!"))
+        if (!isLiked) return next(ApiError.badRequest("Данного фильма нет в понравившихся пользователю!"))
 
-            const liked = await Liked.destroy({where: {id}})
+        const likedDestroy = await Liked.destroy({where: {id: isLiked.id}})
 
-            return res.json(liked)
-        } else {
-            return next(ApiError.badRequest("В запросе не был передан Id"))
-        }
+        if (likedDestroy)
+            return res.json(likedDestroy)
+        else
+            return next(ApiError.internal("Что-то пошло не так!"))
     }
 }
 
